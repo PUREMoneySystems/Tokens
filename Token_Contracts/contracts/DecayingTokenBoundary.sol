@@ -1,22 +1,19 @@
 
-import "DecayingTokenEnvironment.sol";
-import "DecayingTokenBoundaryRange.sol";
-
 
 contract DecayingTokenBoundary {
 
+    
+    function findActiveRange(address _environment) constant public returns (address range, bool foundAnActiveRange);
 
-    function findActiveRange(DecayingTokenEnvironment environment) constant public returns (DecayingTokenBoundaryRange range, bool cannotFindActiveRange);
-
-    function addRange(DecayingTokenBoundaryRange range) returns (uint256 rangeIndex){
-	uint256 newRangeIndex = ranges.length;
-	ranges[newRangeIndex] = range;
+    
+    function addRange(address _range) returns (uint256 rangeIndex){
+	uint256 newRangeIndex = ranges.push(_range);	
 	return newRangeIndex;
     }
     
-    function removeRange(uint8 rangeIndex) returns (bool success){
-	if(ranges.length > rangeIndex && 0 <= rangeIndex){
-	    for(uint256 i = rangeIndex; i < ranges.length - 1; i++){
+    function removeRange(uint256 _rangeIndex) returns (bool success){
+	if(ranges.length > _rangeIndex && 0 <= _rangeIndex){
+	    for(uint256 i = _rangeIndex; i < ranges.length - 1; i++){
 		ranges[i] = ranges[i+1];
 	    }
 	    delete ranges[ranges.length-1];
@@ -29,5 +26,5 @@ contract DecayingTokenBoundary {
     }    
 
 
-    DecayingTokenBoundaryRange[] ranges;
+    address[] internal ranges;
 }

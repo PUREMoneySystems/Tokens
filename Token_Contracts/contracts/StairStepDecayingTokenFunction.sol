@@ -1,5 +1,6 @@
 import "DecayingTokenFunction.sol";
 
+
 contract StairStepDecayingTokenFunction is DecayingTokenFunction {
 
 
@@ -8,11 +9,17 @@ contract StairStepDecayingTokenFunction is DecayingTokenFunction {
     }
     
     
-    function StairStepDecayingTokenFunction(){}
+    function StairStepDecayingTokenFunction(){
+    }
+
+
+    function getFunctionType() constant external returns (uint8 functionType){
+	return uint8(TokenFunctionType.StairStep);
+    }
     
     
-    function executeDecayFunction(uint256 amount, uint256 rangeLength, uint256 distanceInRange, uint256 startPercent, uint256 endPercent) constant public returns (uint256 decayedAmount){
-        
-    }  
+    function executeDecayFunction(uint256 _amount, uint256 _rangeLength, uint256 _distanceInRange, uint256 _startPercent, uint256 _endPercent) public returns (uint256 decayedAmount){
+        return 222222;
+    } 
     
 }

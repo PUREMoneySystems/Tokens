@@ -8,11 +8,25 @@ contract SuddenDecayingTokenFunction is DecayingTokenFunction {
     }
     
     
-    function SuddenDecayingTokenFunction(){}
+    function SuddenDecayingTokenFunction(){
+    }
+
+
+    function getFunctionType() constant external returns (uint8 functionType){
+	return uint8(TokenFunctionType.Sudden);
+    }
     
     
-    function executeDecayFunction(uint256 amount, uint256 rangeLength, uint256 distanceInRange, uint256 startPercent, uint256 endPercent) constant public returns (uint256 decayedAmount){
+    function executeDecayFunction(uint256 _amount, uint256 _rangeLength, uint256 _distanceInRange, uint256 _startPercent, uint256 _endPercent) public returns (uint256 decayedAmount){
+        //Percentages were supplied with 2 units of precision already, so decayedAmount will need them removed with rounding
+                                                
+        if(_rangeLength <= 0 || _distanceInRange >= _rangeLength){
+    	  decayedAmount = (_endPercent * _amount) / 100;
+    	}else{
+    	  decayedAmount = _amount;
+	}
         
+    	return decayedAmount;
     }    
     
 }

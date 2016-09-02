@@ -1,12 +1,13 @@
 
 
 import "DecayingTokenBoundaryRange.sol";
+import "TimeDecayingTokenEnvironment.sol";
 
 
 contract TimeDecayingTokenBoundaryRange is DecayingTokenBoundaryRange {
 
-    uint256 internal _startDate;
-    uint256 internal _endDate;
+    uint256 public startDate;
+    uint256 public endDate;
 
 
     function(){
@@ -15,31 +16,46 @@ contract TimeDecayingTokenBoundaryRange is DecayingTokenBoundaryRange {
 
     
     function TimeDecayingTokenBoundaryRange(
-	uint256 startDate, 
-	uint256 endDate, 
-	uint256 startPercent, 
-	uint256 endPercent, 
-	DecayingTokenFunction tokenFunction){
+	uint256 _startDate, 
+	uint256 _endDate, 
+	uint256 _startPercent, 
+	uint256 _endPercent, 
+	address _tokenFunction){
 	
-	if(startDate >= endDate){ throw; }
-	if(startPercent < endPercent){ throw; }
+	if(_startDate >= _endDate){ throw; }
+	if(_startPercent < _endPercent){ throw; }
 	
-	_startDate = startDate;
-	_endDate = endDate;
-	_startingPercent = startPercent;
-	_endingPercent = endPercent;
-	_tokenFunction = tokenFunction;    
+	startDate = _startDate;
+	endDate = _endDate;
+	startingPercent = _startPercent;
+	endingPercent = _endPercent;
+	tokenFunction = _tokenFunction;  
     }
 
     
     function calculateRangeLength() constant public returns (uint256 rangeLength){
-	return 0;
+	return (endDate-startDate);
     }
     
     
-    function calculateCurrentDistanceInRange(DecayingTokenEnvironment environment) constant public returns (uint256 distanceInRange){
-	return 0;
+    function calculateCurrentDistanceInRange(address _environment) constant public returns (uint256 distanceInRange){
+	uint256 rangeLength = calculateRangeLength();
+	
+	TimeDecayingTokenEnvironment timeEnvironment = TimeDecayingTokenEnvironment(_environment);
+	if(timeEnvironment.currentTime() >= endDate){
+	  return rangeLength;
+	}else{
+	  if(timeEnvironment.currentTime() <= startDate){
+	    return 0;
+	  }else{
+	    return (timeEnvironment.currentTime() - startDate);
+	  }
+	}	  
     }
+    
+    
+    
+    
     
 
 }

@@ -15,24 +15,29 @@ contract TimeDecayingTokenFactory is DecayingTokenFactory {
     }
     
     
-    function TimeDecayingTokenFactory(bool useTheDefaultRegistry){    
-	if(useTheDefaultRegistry){
+    function TimeDecayingTokenFactory(bool _useTheDefaultRegistry, address _logger){    
+	if(_useTheDefaultRegistry){
 	  useDefaultRegistry();
 	}
+	
+	setLogger(_logger);
     }
 
 
     function createTimeDecayingToken(
-	uint256 startDate, 
-	uint256 endDate, 
-	uint256 startPercent, 
-	uint256 endPercent, 
-	uint256 initialAmount, 
-	TokenFunctionType functionType) returns (TimeDecayingToken newTimeDecayingToken){
+	uint256 _startDate, 
+	uint256 _endDate, 
+	uint256 _startPercent, 
+	uint256 _endPercent, 
+	uint256 _initialAmount, 
+	string _tokenName,
+	uint8 _decimalUnits,
+	string _tokenSymbol,
+	uint8 _functionType) returns (TimeDecayingToken newTimeDecayingToken){
 	
-	DecayingTokenFunction tokenFunction = createTokenFunction(functionType);
-	TimeDecayingTokenBoundary tokenBoundary = new TimeDecayingTokenBoundary(startDate, endDate, startPercent, endPercent, tokenFunction);
-	newTimeDecayingToken = new TimeDecayingToken(tokenBoundary, initialAmount);
+	DecayingTokenFunction tokenFunction = getTokenFunction(_functionType);
+	TimeDecayingTokenBoundary tokenBoundary = new TimeDecayingTokenBoundary(_startDate, _endDate, _startPercent, _endPercent, address(tokenFunction));
+	newTimeDecayingToken = new TimeDecayingToken(address(tokenBoundary), _initialAmount, _tokenName, _decimalUnits, _tokenSymbol);
 	return newTimeDecayingToken;    
     }
 

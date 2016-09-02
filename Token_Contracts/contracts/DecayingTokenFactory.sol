@@ -7,36 +7,43 @@ import "StairStepDecayingTokenFunction.sol";
 import "ExponentialDecayingTokenFunction.sol";
 
 
-contract DecayingTokenFactory is StandardTokenFactory {
+import "Logger.sol";
+import "Logable.sol";
 
-  enum TokenFunctionType { Sudden, Linear, StairStep, Exponential, Custom }
+
+contract DecayingTokenFactory is StandardTokenFactory, Logable {
+
+  mapping (uint8 => address) internal tokenFunctions;
+  bool internal tokenFunctionsSet;
   
   
-  function createTokenFunction(TokenFunctionType functionType) constant public returns (DecayingTokenFunction tokenFunction){
-      DecayingTokenFunction returnTokenFunction;
-      
-      if(functionType == TokenFunctionType.Sudden){
-	  returnTokenFunction = new SuddenDecayingTokenFunction();
+  
+  function createTokenFunctions() internal returns (bool success){
+      if(tokenFunctionsSet){
+	  return true;
       }else{
-	  if(functionType == TokenFunctionType.Linear){
-	      returnTokenFunction = new LinearDecayingTokenFunction();
-	  }else{
-	      if(functionType == TokenFunctionType.StairStep){
-		  returnTokenFunction = new StairStepDecayingTokenFunction();
-	      }else{
-		  if(functionType == TokenFunctionType.Exponential){
-		      returnTokenFunction = new ExponentialDecayingTokenFunction();
-		  }else{
-		      if(functionType == TokenFunctionType.Custom){
-			  returnTokenFunction = new LinearDecayingTokenFunction();
-		      }else{
-			  throw;
-		      }
-		  }
-	      }	  
-	  }      
-      }
+	  ExponentialDecayingTokenFunction exponentialTokenFunction = new ExponentialDecayingTokenFunction();
+	  LinearDecayingTokenFunction linearTokenFunction = new LinearDecayingTokenFunction();
+	  StairStepDecayingTokenFunction stairStepTokenFunction = new StairStepDecayingTokenFunction();
+	  SuddenDecayingTokenFunction suddenTokenFunction = new SuddenDecayingTokenFunction();
       
+	  tokenFunctions[uint8(exponentialTokenFunction.getFunctionType())] = address(exponentialTokenFunction);
+	  tokenFunctions[uint8(linearTokenFunction.getFunctionType())] = address(linearTokenFunction);
+	  tokenFunctions[uint8(stairStepTokenFunction.getFunctionType())] = address(stairStepTokenFunction);
+	  tokenFunctions[uint8(suddenTokenFunction.getFunctionType())] = address(suddenTokenFunction);
+      
+	  tokenFunctionsSet = true;
+	  return true;
+      }
+  }
+  
+  
+  function getTokenFunction(uint8 _functionType) constant public returns (DecayingTokenFunction tokenFunction){
+      if(!tokenFunctionsSet){
+	  createTokenFunctions();
+      }      
+      
+      DecayingTokenFunction returnTokenFunction = DecayingTokenFunction(tokenFunctions[_functionType]);
       return returnTokenFunction;
   }
     

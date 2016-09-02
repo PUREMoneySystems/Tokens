@@ -4,9 +4,9 @@ import "Token.sol";
 
 contract StandardTokenFactory is TokenFactory {
 
-    bool internal _useRegistry = false;
-    address internal _registry;
-    address internal _DEFAULT_REGISTRY;
+    bool internal useRegistry = false;
+    address internal registry;
+    address internal DEFAULT_REGISTRY;
     
     
     event TokenRegistryChanged(address currentRegistry, bool registryUseON);
@@ -15,7 +15,7 @@ contract StandardTokenFactory is TokenFactory {
     
     function useDefaultRegistry() internal returns (bool usingDefaultRegistrySuccess){
         if(setUseRegistry(true)){
-            if(setRegistry(_DEFAULT_REGISTRY)){
+            if(setRegistry(DEFAULT_REGISTRY)){
                 //Successfully set the token registry to the default
                 TokenRegistryChanged(getRegistry(), getUseRegistry());
                 return true;
@@ -27,29 +27,29 @@ contract StandardTokenFactory is TokenFactory {
         }
     }
     function getUseRegistry() constant public returns (bool){
-	    return _useRegistry;
+	    return useRegistry;
     }
-    function setUseRegistry(bool useRegistry) internal returns (bool registrySetSuccess){
-	    _useRegistry = useRegistry;
+    function setUseRegistry(bool _useRegistry) internal returns (bool registrySetSuccess){
+	    useRegistry = _useRegistry;
 	    return true;
     }
-    function setRegistry(address newRegistryAddress) public returns (bool registrationSuccess){
+    function setRegistry(address _newRegistryAddress) public returns (bool registrationSuccess){
         if(setUseRegistry(true)){
-            _registry = newRegistryAddress;
+            registry = _newRegistryAddress;
             return true;
         }else{
             return false;
         }
     }
     function getRegistry() constant public returns (address registry){
-	    return _registry;
+	    return registry;
     }
     
-    function registerNewToken(Token newToken) returns (bool){
+    function registerNewToken(Token _newToken) returns (bool){
         
     }
     
-    function deregisterToken(Token token) returns (bool){
+    function deregisterToken(Token _token) returns (bool){
         
     }
 

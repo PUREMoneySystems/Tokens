@@ -1,6 +1,5 @@
 
 import "DecayingToken.sol";
-import "TimeDecayingTokenBoundary.sol";
 
 
 contract TimeDecayingToken is DecayingToken {
@@ -9,8 +8,20 @@ contract TimeDecayingToken is DecayingToken {
 	throw;
     }
     
-    function TimeDecayingToken(TimeDecayingTokenBoundary tokenBoundary, uint256 initialAmount){
-	addBoundary(tokenBoundary);
+    function TimeDecayingToken(
+	address _tokenBoundary, 
+	uint256 _initialAmount,
+	string _tokenName,
+        uint8 _decimalUnits,
+        string _tokenSymbol){
+        
+        balances[msg.sender] = _initialAmount;     
+        totalSupply = _initialAmount;                        
+        name = _tokenName;                                  
+        decimals = _decimalUnits;  
+        symbol = _tokenSymbol;    
+        
+	addBoundary(_tokenBoundary);
     }
 }
 
