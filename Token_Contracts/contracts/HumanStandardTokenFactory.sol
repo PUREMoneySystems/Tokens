@@ -1,6 +1,9 @@
-import "HumanStandardToken.sol";
 
-contract HumanStandardTokenFactory {
+import "HumanStandardToken.sol";
+import "StandardTokenFactory.sol";
+
+
+contract HumanStandardTokenFactory is StandardTokenFactory {
 
     mapping(address => address[]) public created;
     mapping(address => bool) public isHumanToken; //verify without having to do a bytecode check.
