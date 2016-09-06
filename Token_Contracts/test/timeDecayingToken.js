@@ -510,9 +510,12 @@ contract("TimeDecayingToken", function(accounts) {
 		newToken.decayedBalanceOf.call(environment.address, {from: accounts[0]}).then(function(decayedBalance){	    
 		  var rangeLength = (newEndDate - newStartDate);
 		  var distanceInRange = (currentTime - newStartDate);
-		  var estimatedDecayedBalance = ((startPercent - ((startPercent - endPercent) * (distanceInRange / rangeLength))) * startingBalance) / 100;
 		  
-		  assert.approximately(decayedBalance.toNumber(), estimatedDecayedBalance, 1);
+		  //y = yMAX - (((yMAX ^ (x / xMAX)) * (startPercent - endPercent)) / 100)
+		  
+		  var estimatedDecayedBalance = startingBalance - ((Math.pow(startingBalance, (distanceInRange / rangeLength)) * (startPercent - endPercent)) / 100);
+		  
+		  assert.approximately(decayedBalance.toNumber(), estimatedDecayedBalance, 10);
 		  done();
 		}).catch(done);
 		  

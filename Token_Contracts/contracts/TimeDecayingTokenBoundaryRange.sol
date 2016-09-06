@@ -33,13 +33,13 @@ contract TimeDecayingTokenBoundaryRange is DecayingTokenBoundaryRange {
     }
 
     
-    function calculateRangeLength() constant public returns (uint256 rangeLength){
-	return (endDate-startDate);
+    function calculateRangeLength() constant public returns (int256 rangeLength){
+	return int256(endDate-startDate);
     }
     
     
-    function calculateCurrentDistanceInRange(address _environment) constant public returns (uint256 distanceInRange){
-	uint256 rangeLength = calculateRangeLength();
+    function calculateCurrentDistanceInRange(address _environment) constant public returns (int256 distanceInRange){
+	int256 rangeLength = calculateRangeLength();
 	
 	TimeDecayingTokenEnvironment timeEnvironment = TimeDecayingTokenEnvironment(_environment);
 	if(timeEnvironment.currentTime() >= endDate){
@@ -48,7 +48,7 @@ contract TimeDecayingTokenBoundaryRange is DecayingTokenBoundaryRange {
 	  if(timeEnvironment.currentTime() <= startDate){
 	    return 0;
 	  }else{
-	    return (timeEnvironment.currentTime() - startDate);
+	    return int256(timeEnvironment.currentTime() - startDate);
 	  }
 	}	  
     }
